@@ -1,4 +1,5 @@
 use bevy::prelude::*;
+use crate::emitters::SimpleDirectedEmitter;
 use crate::movement::CircleFlight;
 
 #[derive(Component)]
@@ -11,18 +12,14 @@ struct MiniDeathStarBundle {
     sprite: SpriteSheetBundle,
 }
 
+use crate::assets::LoadedAssets;
 pub fn spawn_death_star (
     commands: &mut Commands,
-    asset_server: &AssetServer,
-    texture_atlases: &mut ResMut<Assets<TextureAtlas>>,
+    loaded_assets: &Res<LoadedAssets>,
     position: Vec2,
 ) {
     let death_star_spritesheet = SpriteSheetBundle {
-        sprite: TextureAtlasSprite { index: 0, ..default() },
-        texture_atlas: texture_atlases.add(TextureAtlas::from_grid(
-            asset_server.load("Minideathstar.png"),
-            Vec2::new(17., 17.), 4, 5, None, None
-        )),
+        texture_atlas: loaded_assets.minideathstar_spritesheet.clone(),
         transform: Transform::from_translation(position.extend(0.)),
         ..default()
     };
@@ -31,7 +28,10 @@ pub fn spawn_death_star (
             minideathstar: MiniDeathStar,
             sprite: death_star_spritesheet,
         }
-    ).insert(CircleFlight { t: 0., amplitude: 10., angular_speed: 0.5, } );
+    )
+        .insert(CircleFlight { t: 0., amplitude: 10., angular_speed: 0.5, } )
+        .insert(SimpleDirectedEmitter { timer: Timer::from_seconds(1., TimerMode::Repeating) })
+    ;
 }
 
 use crate::player::Player;

@@ -1,4 +1,5 @@
 use bevy::prelude::*;
+use crate::PLAYER_LAYER;
 
 #[derive(Component)]
 pub struct Player {
@@ -34,6 +35,7 @@ fn spawn_player(
             asset_server.load("Ship.png"),
             Vec2::new(15., 15.), 2, 3, None, None,
         )),
+        transform: Transform::from_translation(Vec3::Z * PLAYER_LAYER),
         ..default()
     };
 

@@ -8,6 +8,9 @@ mod enemies;
 mod movement;
 mod testlevel;
 mod emitters;
+mod bullets;
+mod collisions;
+mod assets;
 
 fn main() {
     App::new()
@@ -27,9 +30,13 @@ fn main() {
             color: Color::rgb(0.1, 0.1, 0.1),
         })
         .add_startup_system(setup)
+        .init_resource::<assets::LoadedAssets>()
+
         .add_plugin(player::PlayerPlugin)
         .add_plugin(MovementPlugin) // moves enemies and bullets
         .add_plugin(enemies::EnemyBehaviorPlugin) // enemy specific behaviors defined in the enemies module
+        .add_plugin(emitters::EmittersPlugin)
+        .add_plugin(collisions::CollisionPlugin)
         
 
         // tests
@@ -43,3 +50,8 @@ fn setup(
 ) {
     commands.spawn( PixelCameraBundle::from_resolution(320, 240) );
 }
+
+// the z value of diferent elements on screen
+
+const BULLET_LAYER: f32 = 5.;
+const PLAYER_LAYER: f32 = 4.;

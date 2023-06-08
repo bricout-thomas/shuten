@@ -14,4 +14,5 @@ opt-level = 3
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [dependencies]
 bevy = { version="0.10.1", features=["dynamic_linking", "wayland"] }
+bevy-inspector-egui = "0.18.3"
 bevy_pixel_camera = "0.4.0"
