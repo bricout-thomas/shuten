@@ -1,5 +1,7 @@
 use bevy::prelude::*;
 
+use crate::{SCREEN_HEIGHT, SCREEN_WIDTH};
+
 // This crate specifies trajectories for bullets and enemies
 // One might add multiple flight components and they should add up
 // As they all add something to the translation
@@ -10,6 +12,7 @@ impl Plugin for MovementPlugin {
         app
             .add_system(move_circle_flight)
             .add_system(move_linear_flight)
+            .add_system(destroy_on_screen_leave)
             ;
     }
 }
@@ -57,5 +60,23 @@ fn move_linear_flight(
 ) {
     for (mut transform, linear_flight) in query.iter_mut() {
         transform.translation += linear_flight.velocity.extend(0.) * time.delta_seconds();
+    }
+}
+
+#[derive(Component)]
+pub struct DestroyOnScreenLeave {
+    pub hitbox: f32,
+}
+
+fn destroy_on_screen_leave(
+    query: Query<(Entity, &Transform, &DestroyOnScreenLeave)>,
+    mut commands: Commands,
+) {
+    for (entity, transform, des) in query.iter() {
+        let position = transform.translation.truncate();
+        let s = des.hitbox;
+        if position.x+s < -SCREEN_WIDTH || position.x-s > SCREEN_WIDTH || position.y+s < -SCREEN_HEIGHT || position.x-s > SCREEN_HEIGHT {
+            commands.entity(entity).despawn_recursive();
+        }
     }
 }

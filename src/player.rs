@@ -44,7 +44,9 @@ fn spawn_player(
             p: Player { rotation: 0. },
             sprite: player_sprite_sheet,
         }
-    );
+    )
+        .insert(Name::new("Player"))
+    ;
 }
 
 fn move_player(

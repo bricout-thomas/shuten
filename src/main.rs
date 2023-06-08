@@ -2,6 +2,7 @@ use bevy::prelude::*;
 use bevy::window::{WindowResolution, WindowMode};
 use bevy_pixel_camera::{PixelCameraPlugin, PixelCameraBundle, PixelBorderPlugin};
 use movement::MovementPlugin;
+use bevy_inspector_egui::quick::WorldInspectorPlugin;
 
 mod player;
 mod enemies;
@@ -41,6 +42,7 @@ fn main() {
 
         // tests
         .add_plugin(testlevel::TestLevelPlugin)
+        .add_plugin(WorldInspectorPlugin::new())
 
         .run();
 }
@@ -48,10 +50,15 @@ fn main() {
 fn setup(
     mut commands: Commands,
 ) {
-    commands.spawn( PixelCameraBundle::from_resolution(320, 240) );
+    commands.spawn( PixelCameraBundle::from_resolution(SCREEN_HEIGHT_i32,SCREEN_WIDTH_i32));
 }
 
-// the z value of diferent elements on screen
+// The screen size ( pixelated resolution for camera and engine transform reference )
+const SCREEN_HEIGHT_i32: i32 = 320;
+const SCREEN_WIDTH_i32: i32 = 240;
+const SCREEN_HEIGHT: f32 = 320.;
+const SCREEN_WIDTH: f32 = 240.;
 
+// the z value of diferent elements on screen
 const BULLET_LAYER: f32 = 5.;
 const PLAYER_LAYER: f32 = 4.;

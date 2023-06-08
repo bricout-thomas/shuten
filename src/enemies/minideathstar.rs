@@ -31,6 +31,7 @@ pub fn spawn_death_star (
     )
         .insert(CircleFlight { t: 0., amplitude: 10., angular_speed: 0.5, } )
         .insert(SimpleDirectedEmitter { timer: Timer::from_seconds(1., TimerMode::Repeating) })
+        .insert(Name::new("MiniDeathStar"))
     ;
 }
 
