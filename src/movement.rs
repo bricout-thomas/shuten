@@ -13,6 +13,7 @@ impl Plugin for MovementPlugin {
             .add_system(move_circle_flight)
             .add_system(move_linear_flight)
             .add_system(destroy_on_screen_leave)
+            .add_system(ease_out_sine_flight)
             ;
     }
 }
@@ -62,6 +63,33 @@ fn move_linear_flight(
         transform.translation += linear_flight.velocity.extend(0.) * time.delta_seconds();
     }
 }
+
+#[derive(Component)]
+pub struct EaseOutSineFlight {
+    pub path: Vec2, 
+    pub t: f32,
+    pub time: f32,
+}
+
+fn ease_out_sine_flight (
+    mut commands: Commands,
+    mut query: Query<(Entity, &mut Transform, &mut EaseOutSineFlight)>,
+    time: Res<Time>,
+) {
+    let delta = time.delta_seconds();
+    for (entity, mut transform, mut flight) in query.iter_mut() {
+        // EaseOutSine = sin(t*pi/2)
+        // EaseOutSineDerivative cos(t*pi/2)*pi/2
+        flight.t += delta/flight.time;
+        if flight.t > 1. {
+            commands.entity(entity).remove::<EaseOutSineFlight>();
+        } else {
+            let variation_s = (flight.t*std::f32::consts::FRAC_PI_2).cos()*std::f32::consts::FRAC_PI_2*delta;
+            transform.translation += (variation_s * flight.path).extend(0.);
+        }
+    }
+}
+
 
 #[derive(Component)]
 pub struct DestroyOnScreenLeave {

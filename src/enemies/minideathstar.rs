@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 use crate::emitters::SimpleDirectedEmitter;
-use crate::movement::CircleFlight;
+use crate::movement::{EaseOutSineFlight, CircleFlight};
 
 #[derive(Component)]
 pub struct MiniDeathStar;
@@ -32,6 +32,7 @@ pub fn spawn_death_star (
         .insert(CircleFlight { t: 0., amplitude: 10., angular_speed: 0.5, } )
         .insert(SimpleDirectedEmitter { timer: Timer::from_seconds(1., TimerMode::Repeating) })
         .insert(Name::new("MiniDeathStar"))
+        .insert(EaseOutSineFlight { t: 0., path: Vec2::NEG_X*50., time: 2.})
     ;
 }
 

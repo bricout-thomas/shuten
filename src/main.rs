@@ -42,7 +42,7 @@ fn main() {
 
         // tests
         .add_plugin(testlevel::TestLevelPlugin)
-        .add_plugin(WorldInspectorPlugin::new())
+        // .add_plugin(WorldInspectorPlugin::new())
 
         .run();
 }
