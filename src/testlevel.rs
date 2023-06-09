@@ -1,5 +1,7 @@
 use bevy::prelude::*;
-use crate::{enemies::spawn_death_star, assets::LoadedAssets};
+use crate::{enemies::spawn_death_star, assets::LoadedAssets, SCREEN_HEIGHT};
+
+// small test level to test touhou like boss spell cards
 
 pub struct TestLevelPlugin;
 impl Plugin for TestLevelPlugin {
@@ -14,7 +16,5 @@ fn spawn_test_ministars(
     mut commands: Commands,
     loaded_assets: Res<LoadedAssets>,
 ) {
-    for i in 0..5 {
-        spawn_death_star(&mut commands, &loaded_assets, Vec2::new(0., 10.*i as f32));
-    }
+    spawn_death_star(&mut commands, &loaded_assets, Vec2::new(0., SCREEN_HEIGHT/2.+20.));
 }

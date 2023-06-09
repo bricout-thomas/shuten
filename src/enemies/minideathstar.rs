@@ -29,12 +29,12 @@ pub fn spawn_death_star (
             sprite: death_star_spritesheet,
         }
     )
-        .insert(CircleFlight { t: 0., amplitude: 10., angular_speed: 0.5, } )
+        // .insert(CircleFlight { t: 0., amplitude: 10., angular_speed: 0.5, } )
         // .insert(SimpleDirectedEmitter { timer: Timer::from_seconds(1., TimerMode::Repeating) })
         .insert(RingEmitter { timer: Timer::from_seconds(10., TimerMode::Repeating), bullet_count: 8, } )
 
         .insert(Name::new("MiniDeathStar"))
-        .insert(EaseOutSineFlight { t: 0., path: Vec2::NEG_X*50., time: 2.})
+        .insert(EaseOutSineFlight { t: 0., path: Vec2::NEG_Y*50., time: 2.})
     ;
 }
 

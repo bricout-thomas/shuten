@@ -14,11 +14,15 @@ impl Plugin for MovementPlugin {
             .add_system(move_linear_flight)
             .add_system(destroy_on_screen_leave)
             .add_system(ease_out_sine_flight)
+
+            .register_type::<CircleFlight>()
+            .register_type::<LinearFlight>()
+            .register_type::<EaseOutSineFlight>()
             ;
     }
 }
 
-#[derive(Component)]
+#[derive(Component, Reflect, Default)]
 pub struct CircleFlight { 
     pub t: f32, 
     pub amplitude: f32,
@@ -37,7 +41,7 @@ fn move_circle_flight(
     }
 }
 
-#[derive(Component)]
+#[derive(Component, Reflect, Default)]
 pub struct LinearFlight {
     pub velocity: Vec2,
 }
@@ -64,7 +68,7 @@ fn move_linear_flight(
     }
 }
 
-#[derive(Component)]
+#[derive(Component, Reflect, Default)]
 pub struct EaseOutSineFlight {
     pub path: Vec2, 
     pub t: f32,
