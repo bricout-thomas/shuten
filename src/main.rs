@@ -42,7 +42,9 @@ fn main() {
 
         // tests
         .add_plugin(testlevel::TestLevelPlugin)
-        // .add_plugin(WorldInspectorPlugin::new())
+
+        // bevy_inspector_equi
+        .add_plugin(WorldInspectorPlugin::new())
 
         .run();
 }

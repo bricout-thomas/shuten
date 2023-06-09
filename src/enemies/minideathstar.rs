@@ -1,6 +1,6 @@
 use bevy::prelude::*;
-use crate::emitters::SimpleDirectedEmitter;
-use crate::movement::{EaseOutSineFlight, CircleFlight};
+use crate::emitters::*;
+use crate::movement::*;
 
 #[derive(Component)]
 pub struct MiniDeathStar;
@@ -30,7 +30,9 @@ pub fn spawn_death_star (
         }
     )
         .insert(CircleFlight { t: 0., amplitude: 10., angular_speed: 0.5, } )
-        .insert(SimpleDirectedEmitter { timer: Timer::from_seconds(1., TimerMode::Repeating) })
+        // .insert(SimpleDirectedEmitter { timer: Timer::from_seconds(1., TimerMode::Repeating) })
+        .insert(RingEmitter { timer: Timer::from_seconds(10., TimerMode::Repeating), bullet_count: 8, } )
+
         .insert(Name::new("MiniDeathStar"))
         .insert(EaseOutSineFlight { t: 0., path: Vec2::NEG_X*50., time: 2.})
     ;
@@ -45,6 +47,6 @@ pub fn look_at_player(
     for (transform, mut star_sprite) in star_query.iter_mut() {
         let look_vector = player_translation - transform.translation.truncate();
         let look_angle = look_vector.angle_between(Vec2::Y); // in radians
-        star_sprite.index = (look_angle * 18. / (2. * std::f32::consts::PI) + 9.).round() as usize;
+        star_sprite.index = (look_angle * 18. / (2. * std::f32::consts::PI) + 9.).floor() as usize;
     }
 }
