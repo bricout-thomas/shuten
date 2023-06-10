@@ -32,13 +32,14 @@ pub fn spawn_death_star (
         // .insert(CircleFlight { t: 0., amplitude: 10., angular_speed: 0.5, } )
         // .insert(SimpleDirectedEmitter { timer: Timer::from_seconds(1., TimerMode::Repeating) })
         .insert(RingEmitter { timer: Timer::from_seconds(10., TimerMode::Repeating), bullet_count: 8, } )
-
         .insert(Name::new("MiniDeathStar"))
         .insert(EaseOutSineFlight { t: 0., path: Vec2::NEG_Y*50., time: 2.})
+        .insert(PlayerKillable { hitbox: 10., health: 5 } )
     ;
 }
 
 use crate::player::Player;
+use super::PlayerKillable;
 pub fn look_at_player(
     player_query: Query<&Transform, With<Player>>,
     mut star_query: Query<(&Transform, &mut TextureAtlasSprite), With<MiniDeathStar>>
@@ -50,3 +51,4 @@ pub fn look_at_player(
         star_sprite.index = (look_angle * 18. / (2. * std::f32::consts::PI) + 9.).floor() as usize;
     }
 }
+

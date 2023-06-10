@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-use crate::PLAYER_LAYER;
+use crate::{PLAYER_LAYER, assets::LoadedAssets, PLAYER_BULLET_LAYER, movement::{LinearFlight, DestroyOnUp}};
 
 #[derive(Component)]
 pub struct Player {
@@ -20,7 +20,8 @@ impl Plugin for PlayerPlugin {
         app
             .add_startup_system(spawn_player)
             .add_system(move_player)
-            ;
+            .add_system(player_shoot)
+        ;
     }
 }
 
@@ -45,6 +46,7 @@ fn spawn_player(
             sprite: player_sprite_sheet,
         }
     )
+        .insert(NormalWeapon { timer: Timer::from_seconds(0.1, TimerMode::Repeating) })
         .insert(Name::new("Player"))
     ;
 }
@@ -91,5 +93,39 @@ fn move_player(
         x if x <= 0.2 => 0,
         x if x <= 0.8 => 1,
         _ => 2,
+    }
+}
+
+#[derive(Component, Reflect, Default)]
+struct NormalWeapon {
+    timer: Timer,
+}
+
+#[derive(Component)]
+pub struct PlayerBullet;
+
+fn player_shoot(
+    keys: Res<Input<KeyCode>>,
+    mut commands: Commands,
+    mut player_query: Query<(&Transform, &mut NormalWeapon), With<Player>>,
+    loaded_assets: Res<LoadedAssets>,
+    time: Res<Time>,
+) {
+    if !keys.pressed(KeyCode::W) { return; }
+    for (transform, mut weapon) in player_query.iter_mut() {
+        weapon.timer.tick(time.delta());
+        if weapon.timer.just_finished() {
+            commands.spawn(
+                SpriteBundle {
+                    texture: loaded_assets.player_bullet.clone(),
+                    transform: Transform::from_translation(transform.translation.truncate().extend(PLAYER_BULLET_LAYER)),
+                    ..default()
+                }
+            )
+                .insert( LinearFlight::from_angle(std::f32::consts::FRAC_PI_2, 200.) )
+                .insert( DestroyOnUp { hitbox: 20. } )
+                .insert( PlayerBullet )
+            ;
+        }
     }
 }

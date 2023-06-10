@@ -63,4 +63,5 @@ const SCREEN_WIDTH: f32 = 240.;
 
 // the z value of diferent elements on screen
 const BULLET_LAYER: f32 = 5.;
+const PLAYER_BULLET_LAYER: f32 = 3.;
 const PLAYER_LAYER: f32 = 4.;

@@ -12,8 +12,10 @@ impl Plugin for MovementPlugin {
         app
             .add_system(move_circle_flight)
             .add_system(move_linear_flight)
-            .add_system(destroy_on_screen_leave)
             .add_system(ease_out_sine_flight)
+
+            .add_system(destroy_on_screen_left)
+            .add_system(destroy_on_up)
 
             .register_type::<CircleFlight>()
             .register_type::<LinearFlight>()
@@ -94,20 +96,39 @@ fn ease_out_sine_flight (
     }
 }
 
-
+// insert this on bullets, as they should not surprise the player by appearing from out screen
 #[derive(Component)]
-pub struct DestroyOnScreenLeave {
+pub struct DestroyOnScreenLeft {
     pub hitbox: f32,
 }
 
-fn destroy_on_screen_leave(
-    query: Query<(Entity, &Transform, &DestroyOnScreenLeave)>,
+fn destroy_on_screen_left(
+    query: Query<(Entity, &Transform, &DestroyOnScreenLeft)>,
     mut commands: Commands,
 ) {
     for (entity, transform, des) in query.iter() {
         let position = transform.translation.truncate();
         let s = des.hitbox;
         if position.x+s < -SCREEN_WIDTH || position.x-s > SCREEN_WIDTH || position.y+s < -SCREEN_HEIGHT || position.x-s > SCREEN_HEIGHT {
+            commands.entity(entity).despawn_recursive();
+        }
+    }
+}
+
+// insert this on player generated projectiles, as they can only go up
+#[derive(Component)]
+pub struct DestroyOnUp {
+    pub hitbox: f32,
+}
+
+fn destroy_on_up (
+    query: Query<(Entity, &Transform, &DestroyOnUp)>,
+    mut commands: Commands,
+) {
+    for (entity, transform, des) in query.iter() {
+        let position = transform.translation.truncate();
+        let s = des.hitbox;
+        if position.x-s > SCREEN_HEIGHT {
             commands.entity(entity).despawn_recursive();
         }
     }
