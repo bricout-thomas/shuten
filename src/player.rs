@@ -3,7 +3,8 @@ use crate::{PLAYER_LAYER, assets::LoadedAssets, PLAYER_BULLET_LAYER, movement::{
 
 #[derive(Component)]
 pub struct Player {
-    rotation: f32, // describes how much the sprite is turning to the right ( negative = left )
+    rotation: f32,      // describes how much the sprite is turning to the right ( negative = left )
+    pub invincibility: f32, // time left before it ends
 }
 
 #[derive(Bundle)]
@@ -42,7 +43,7 @@ fn spawn_player(
 
     commands.spawn(
         PlayerBundle {
-            p: Player { rotation: 0. },
+            p: Player { rotation: 0., invincibility: 0. },
             sprite: player_sprite_sheet,
         }
     )
@@ -115,17 +116,25 @@ fn player_shoot(
     for (transform, mut weapon) in player_query.iter_mut() {
         weapon.timer.tick(time.delta());
         if weapon.timer.just_finished() {
-            commands.spawn(
-                SpriteBundle {
-                    texture: loaded_assets.player_bullet.clone(),
-                    transform: Transform::from_translation(transform.translation.truncate().extend(PLAYER_BULLET_LAYER)),
-                    ..default()
-                }
-            )
-                .insert( LinearFlight::from_angle(std::f32::consts::FRAC_PI_2, 200.) )
-                .insert( DestroyOnUp { hitbox: 20. } )
-                .insert( PlayerBullet )
-            ;
+            let bullet_amount = 5;
+            let bullet_distance = 5.;
+            for i in 0..bullet_amount {
+                let position = 
+                    (transform.translation.truncate() + Vec2::X * (- bullet_amount as f32 * bullet_distance / 2. + i as f32 * bullet_distance))
+                    .extend(PLAYER_BULLET_LAYER);
+                commands.spawn(
+                    SpriteBundle {
+                        texture: loaded_assets.player_bullet.clone(),
+                        transform: Transform::from_translation(position),
+                        ..default()
+                    }
+                )
+                    .insert( LinearFlight::from_angle(std::f32::consts::FRAC_PI_2, 200.) )
+                    .insert( DestroyOnUp { hitbox: 20. } )
+                    .insert( PlayerBullet )
+                    .insert( Name::new("PlayerBullet") )
+                ;
+            }
         }
     }
 }

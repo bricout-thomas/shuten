@@ -1,4 +1,5 @@
 use bevy::prelude::*;
+use crate::collisions::DamageCircleHitbox;
 use crate::emitters::*;
 use crate::movement::*;
 
@@ -17,7 +18,7 @@ pub fn spawn_death_star (
     commands: &mut Commands,
     loaded_assets: &Res<LoadedAssets>,
     position: Vec2,
-) {
+) -> Entity {
     let death_star_spritesheet = SpriteSheetBundle {
         texture_atlas: loaded_assets.minideathstar_spritesheet.clone(),
         transform: Transform::from_translation(position.extend(0.)),
@@ -31,11 +32,11 @@ pub fn spawn_death_star (
     )
         // .insert(CircleFlight { t: 0., amplitude: 10., angular_speed: 0.5, } )
         // .insert(SimpleDirectedEmitter { timer: Timer::from_seconds(1., TimerMode::Repeating) })
-        .insert(RingEmitter { timer: Timer::from_seconds(10., TimerMode::Repeating), bullet_count: 8, } )
         .insert(Name::new("MiniDeathStar"))
         .insert(EaseOutSineFlight { t: 0., path: Vec2::NEG_Y*50., time: 2.})
         .insert(PlayerKillable { hitbox: 10., health: 5 } )
-    ;
+        .insert(DamageCircleHitbox { radius_squared: 8f32.powi(2) } )
+    .id()
 }
 
 use crate::player::Player;

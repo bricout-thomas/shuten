@@ -33,16 +33,16 @@ fn player_killable_hit (
         for (bullet_entity, bullet_transform) in player_bullet_query.iter() {
             let bullet_pos = bullet_transform.translation.truncate();
             let enemy_pos = enemy_transform.translation.truncate();
-            let hit =   bullet_pos.x > enemy_pos.x - killable.hitbox &&
+            let hit =  bullet_pos.x > enemy_pos.x - killable.hitbox &&
                         bullet_pos.x < enemy_pos.x + killable.hitbox &&
                         bullet_pos.y > enemy_pos.y - killable.hitbox &&
                         bullet_pos.y < enemy_pos.y + killable.hitbox;
 
             if hit {
                 commands.entity(bullet_entity).despawn_recursive();
-                killable.health -= 1;
-                if killable.health == 0 {
-                    commands.entity(enemy_entity).despawn_recursive();
+                match killable.health.checked_sub(1) {
+                    Some(i) => killable.health = i,
+                    None => commands.entity(enemy_entity).despawn_recursive()
                 }
             }
         }
