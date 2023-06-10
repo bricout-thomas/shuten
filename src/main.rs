@@ -32,6 +32,7 @@ fn main() {
         })
         .add_startup_system(setup)
         .init_resource::<assets::LoadedAssets>()
+        .add_state::<AppState>()
 
         .add_plugin(player::PlayerPlugin)
         .add_plugin(MovementPlugin) // moves enemies and bullets
@@ -53,6 +54,13 @@ fn setup(
     mut commands: Commands,
 ) {
     commands.spawn( PixelCameraBundle::from_resolution(SCREEN_HEIGHT_i32,SCREEN_WIDTH_i32));
+}
+
+#[derive(Debug, Clone, Eq, PartialEq, Hash, States, Default)]
+enum AppState {
+    #[default]
+    InGame,
+    Paused,
 }
 
 // The screen size ( pixelated resolution for camera and engine transform reference )

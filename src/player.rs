@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-use crate::{PLAYER_LAYER, assets::LoadedAssets, PLAYER_BULLET_LAYER, movement::{LinearFlight, DestroyOnUp}};
+use crate::{PLAYER_LAYER, assets::LoadedAssets, PLAYER_BULLET_LAYER, movement::{LinearFlight, DestroyOnUp}, AppState};
 
 #[derive(Component)]
 pub struct Player {
@@ -20,8 +20,8 @@ impl Plugin for PlayerPlugin {
     fn build(&self, app: &mut App) {
         app
             .add_startup_system(spawn_player)
-            .add_system(move_player)
-            .add_system(player_shoot)
+            .add_system(move_player.in_set(OnUpdate(AppState::InGame)))
+            .add_system(player_shoot.in_set(OnUpdate(AppState::InGame)))
         ;
     }
 }

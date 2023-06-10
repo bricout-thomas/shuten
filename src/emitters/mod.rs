@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use crate::{
     bullets::{spawn_simple_aimed_linear_bullet, spawn_fixed_linear_bullet},
-    assets::LoadedAssets,
+    assets::LoadedAssets, AppState,
 };
 
 // This module handles emitters, that is, anything that spewts bullets
@@ -10,8 +10,7 @@ pub struct EmittersPlugin;
 impl Plugin for EmittersPlugin {
     fn build(&self, app: &mut App) {
         app
-            .add_system(simple_directed_emitter)
-            .add_system(ring_arc_emitter)
+            .add_systems((simple_directed_emitter, ring_arc_emitter).in_set(OnUpdate(AppState::InGame)))
 
             .register_type::<SimpleDirectedEmitter>()
             .register_type::<RingEmitter>()

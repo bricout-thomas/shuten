@@ -10,7 +10,7 @@ impl Plugin for EnemyBehaviorPlugin {
     fn build(&self, app: &mut App) {
         app
             .add_system(minideathstar::look_at_player)
-            .add_system(player_killable_hit)
+            .add_system(player_killable_hit.in_set(OnUpdate(AppState::InGame)))
 
             .register_type::<PlayerKillable>()
             ;
@@ -23,7 +23,7 @@ struct PlayerKillable {
     hitbox: f32,
 }
 
-use crate::player::PlayerBullet;
+use crate::{player::PlayerBullet, AppState};
 fn player_killable_hit (
     mut commands: Commands,
     mut query: Query<(Entity, &Transform, &mut PlayerKillable)>,

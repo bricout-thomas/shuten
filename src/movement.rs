@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use crate::{SCREEN_HEIGHT, SCREEN_WIDTH};
+use crate::{SCREEN_HEIGHT, SCREEN_WIDTH, AppState};
 
 // This crate specifies trajectories for bullets and enemies
 // One might add multiple flight components and they should add up
@@ -10,9 +10,11 @@ pub struct MovementPlugin;
 impl Plugin for MovementPlugin {
     fn build(&self, app: &mut App) {
         app
-            .add_system(move_circle_flight)
-            .add_system(move_linear_flight)
-            .add_system(ease_out_sine_flight)
+            .add_systems(
+                (move_circle_flight,
+                move_linear_flight,
+                ease_out_sine_flight)
+                    .in_set(OnUpdate(AppState::InGame)))
 
             .add_system(destroy_on_screen_left)
             .add_system(destroy_on_up)
