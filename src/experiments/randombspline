@@ -1,0 +1,43 @@
+
+  .add_system(random_bspline_flight.in_set(OnUpdate(AppState::InGame)))
+
+#[derive(Component, Default, Reflect)]
+struct RandomBSplineFlight {
+    t: f32,
+    knots: [Vec2; 4],
+}
+
+impl RandomBSplineFlight {
+    fn new(start_pos: Vec2) -> Self {
+        let mut knots: [Vec2; 4] = [start_pos, default(), default(), default() ];
+        knots[1] = Vec2::new((random::<f32>()-0.5)*SCREEN_WIDTH, (random::<f32>()-0.5)*SCREEN_HEIGHT);
+        knots[2] = Vec2::new((random::<f32>()-0.5)*SCREEN_WIDTH, (random::<f32>()-0.5)*SCREEN_HEIGHT);
+        knots[3] = Vec2::new((random::<f32>()-0.5)*SCREEN_WIDTH, (random::<f32>()-0.5)*SCREEN_HEIGHT);
+
+        Self {
+            t: 0.,
+            knots,
+        }
+    }
+}
+
+use rand::random;
+fn random_bspline_flight(
+    mut query: Query<(&mut Transform, &mut RandomBSplineFlight)>,
+    time: Res<Time>,
+) {
+    for (mut transform, mut flight) in query.iter_mut() {
+        flight.t += time.delta_seconds()/5.;
+        if flight.t > 1. { 
+            flight.t -= 1.;  
+            flight.knots[0] = flight.knots[1];
+            flight.knots[1] = flight.knots[2];
+            flight.knots[2] = flight.knots[3];
+            // newly generated knot
+            flight.knots[3] = Vec2::new((random::<f32>()-0.5)*SCREEN_WIDTH, (random::<f32>()-0.5)*SCREEN_HEIGHT);
+        }
+        transform.translation = BSpline::new(flight.knots).to_curve().position(flight.t).extend(transform.translation.z);
+        // transform.translation = spline::<CatmullRom, _, _>(flight.t, &flight.knots).extend(transform.translation.z); 
+        // doesn't work because of Vec2 lacking trait impl
+    }
+}
