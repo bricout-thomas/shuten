@@ -35,10 +35,10 @@ fn main() {
         .add_state::<AppState>()
 
         .add_plugin(player::PlayerPlugin)
-        .add_plugin(MovementPlugin) // moves enemies and bullets
-        .add_plugin(enemies::EnemyBehaviorPlugin) // enemy specific behaviors defined in the enemies module
-        .add_plugin(emitters::EmittersPlugin)
-        .add_plugin(collisions::CollisionPlugin)
+        .add_plugin(MovementPlugin)                 // moves enemies and bullets
+        .add_plugin(enemies::EnemyBehaviorPlugin)   // enemy specific behaviors defined in the enemies module
+        .add_plugin(emitters::EmittersPlugin)       // emits bullets, defines their spawning and
+        .add_plugin(collisions::CollisionPlugin)    // collision between enemies, player and en
         
 
         // tests

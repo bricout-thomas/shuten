@@ -4,7 +4,10 @@ use crate::{SCREEN_HEIGHT, SCREEN_WIDTH, AppState, HALF_SCREEN_HEIGHT, HALF_SCRE
 
 // This crate specifies trajectories for bullets and enemies
 // One might add multiple flight components and they should add up
-// As they all add something to the translation
+// As they all add something to the translation each frame,
+// except for spline defined trajectories
+
+// one can add two time the same trajectory or a spline to another trajectory using a parent node
 
 pub struct MovementPlugin;
 impl Plugin for MovementPlugin {
