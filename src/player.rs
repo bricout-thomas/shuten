@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-use crate::{PLAYER_LAYER, assets::LoadedAssets, PLAYER_BULLET_LAYER, movement::{LinearFlight, DestroyOnUp}, AppState};
+use crate::{PLAYER_LAYER, assets::LoadedAssets, PLAYER_BULLET_LAYER, movement::{LinearFlight, DestroyOnUp, ConstrainOnScreen}, AppState};
 
 #[derive(Component)]
 pub struct Player {
@@ -10,10 +10,12 @@ pub struct Player {
 #[derive(Bundle)]
 struct PlayerBundle {
     p: Player,
+    
 
     #[bundle]
     sprite: SpriteSheetBundle,
 }
+
 
 pub struct PlayerPlugin;
 impl Plugin for PlayerPlugin {
@@ -47,6 +49,7 @@ fn spawn_player(
             sprite: player_sprite_sheet,
         }
     )
+        .insert(ConstrainOnScreen { half_hitbox: 5. })
         .insert(NormalWeapon { timer: Timer::from_seconds(0.1, TimerMode::Repeating) })
         .insert(Name::new("Player"))
     ;

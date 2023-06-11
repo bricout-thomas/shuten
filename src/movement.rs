@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use crate::{SCREEN_HEIGHT, SCREEN_WIDTH, AppState};
+use crate::{SCREEN_HEIGHT, SCREEN_WIDTH, AppState, HALF_SCREEN_HEIGHT, HALF_SCREEN_WIDTH};
 
 // This crate specifies trajectories for bullets and enemies
 // One might add multiple flight components and they should add up
@@ -11,9 +11,12 @@ impl Plugin for MovementPlugin {
     fn build(&self, app: &mut App) {
         app
             .add_systems(
-                (move_circle_flight,
+                (
+                move_circle_flight,
                 move_linear_flight,
-                ease_out_sine_flight)
+                ease_out_sine_flight,
+                constrain_on_screen
+                )
                     .in_set(OnUpdate(AppState::InGame)))
 
             .add_system(destroy_on_screen_left)
@@ -22,6 +25,7 @@ impl Plugin for MovementPlugin {
             .register_type::<CircleFlight>()
             .register_type::<LinearFlight>()
             .register_type::<EaseOutSineFlight>()
+            .register_type::<ConstrainOnScreen>()
             ;
     }
 }
@@ -118,6 +122,7 @@ fn destroy_on_screen_left(
 }
 
 // insert this on player generated projectiles, as they can only go up
+// exept of course if they don't
 #[derive(Component)]
 pub struct DestroyOnUp {
     pub hitbox: f32,
@@ -133,5 +138,18 @@ fn destroy_on_up (
         if position.x-s > SCREEN_HEIGHT {
             commands.entity(entity).despawn_recursive();
         }
+    }
+}
+
+// constrains ( probably only the player ) to the screen
+#[derive(Component, Default, Reflect)]
+pub struct ConstrainOnScreen { pub half_hitbox: f32 }
+
+fn constrain_on_screen (
+    mut query: Query<(&ConstrainOnScreen, &mut Transform)>,
+) {
+    for (constraint, mut transform) in query.iter_mut() {
+        transform.translation.x = transform.translation.x.min(HALF_SCREEN_HEIGHT-constraint.half_hitbox).max(-HALF_SCREEN_HEIGHT+constraint.half_hitbox);
+        transform.translation.y = transform.translation.y.min(HALF_SCREEN_WIDTH -constraint.half_hitbox).max(-HALF_SCREEN_WIDTH +constraint.half_hitbox);
     }
 }

@@ -64,10 +64,15 @@ enum AppState {
 }
 
 // The screen size ( pixelated resolution for camera and engine transform reference )
+#[allow(non_upper_case_globals)]
 const SCREEN_HEIGHT_i32: i32 = 320;
+#[allow(non_upper_case_globals)]
 const SCREEN_WIDTH_i32: i32 = 240;
 const SCREEN_HEIGHT: f32 = 320.;
 const SCREEN_WIDTH: f32 = 240.;
+const HALF_SCREEN_HEIGHT: f32 = SCREEN_HEIGHT/2.;
+const HALF_SCREEN_WIDTH: f32 =   SCREEN_WIDTH/2.;
+
 
 // the z value of diferent elements on screen
 const BULLET_LAYER: f32 = 5.;
