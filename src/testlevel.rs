@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-use crate::{enemies::spawn_death_star, assets::LoadedAssets, SCREEN_HEIGHT, emitters::*, AppState};
+use crate::{enemies::spawn_death_star, assets::LoadedAssets, SCREEN_HEIGHT, emitters::*, AppState, HALF_SCREEN_WIDTH, SCREEN_WIDTH};
 
 // small test level to test touhou like boss spell cards
 
