@@ -1,10 +1,11 @@
 use bevy::prelude::*;
-use crate::{PLAYER_LAYER, assets::LoadedAssets, PLAYER_BULLET_LAYER, movement::{LinearFlight, DestroyOnUp, ConstrainOnScreen}, AppState};
+use crate::{PLAYER_LAYER, assets::LoadedAssets, PLAYER_BULLET_LAYER, movement::*, AppState};
 
 #[derive(Component)]
 pub struct Player {
     rotation: f32,      // describes how much the sprite is turning to the right ( negative = left )
     pub invincibility: f32, // time left before it ends
+    pub health: u8,
 }
 
 #[derive(Bundle)]
@@ -45,7 +46,7 @@ fn spawn_player(
 
     commands.spawn(
         PlayerBundle {
-            p: Player { rotation: 0., invincibility: 0. },
+            p: Player { rotation: 0., invincibility: 0., health: 5 },
             sprite: player_sprite_sheet,
         }
     )
@@ -141,3 +142,4 @@ fn player_shoot(
         }
     }
 }
+

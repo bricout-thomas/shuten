@@ -12,6 +12,7 @@ mod emitters;
 mod bullets;
 mod collisions;
 mod assets;
+mod ui;
 
 fn main() {
     App::new()
@@ -26,6 +27,7 @@ fn main() {
             }),
             .. default()
         }).set(ImagePlugin::default_nearest()))
+        .insert_resource(ClearColor(Color::rgb_u8(96, 103, 130)))
         .add_plugin(PixelCameraPlugin)
         .add_plugin(PixelBorderPlugin {
             color: Color::rgb(0.1, 0.1, 0.1),
@@ -39,7 +41,7 @@ fn main() {
         .add_plugin(enemies::EnemyBehaviorPlugin)   // enemy specific behaviors defined in the enemies module
         .add_plugin(emitters::EmittersPlugin)       // emits bullets, defines their spawning and
         .add_plugin(collisions::CollisionPlugin)    // collision between enemies, player and en
-        
+        .add_plugin(ui::UIPlugin)
 
         // tests
         .add_plugin(testlevel::TestLevelPlugin)
@@ -61,6 +63,7 @@ enum AppState {
     #[default]
     InGame,
     Paused,
+    Death,
 }
 
 // The screen size ( pixelated resolution for camera and engine transform reference )
@@ -78,3 +81,4 @@ const HALF_SCREEN_WIDTH: f32 =   SCREEN_WIDTH/2.;
 const BULLET_LAYER: f32 = 5.;
 const PLAYER_BULLET_LAYER: f32 = 3.;
 const PLAYER_LAYER: f32 = 4.;
+const UI_LAYER: f32 = 4.5;

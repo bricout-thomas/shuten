@@ -136,9 +136,7 @@ fn destroy_on_up (
     mut commands: Commands,
 ) {
     for (entity, transform, des) in query.iter() {
-        let position = transform.translation.truncate();
-        let s = des.hitbox;
-        if position.x-s > SCREEN_HEIGHT {
+        if transform.translation.y - des.hitbox > HALF_SCREEN_HEIGHT {
             commands.entity(entity).despawn_recursive();
         }
     }

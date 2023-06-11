@@ -4,11 +4,13 @@ use crate::{player::Player, AppState};
 pub struct CollisionPlugin;
 impl Plugin for CollisionPlugin {
     fn build(&self, app: &mut App) {
-        app.
-            add_system(damage_circle_collision.in_set(OnUpdate(AppState::InGame)))
+        app
+            .add_system(damage_circle_collision.in_set(OnUpdate(AppState::InGame)))
+            .add_event::<PlayerHitEvent>()
             ;
     }
 }
+
 
 #[derive(Component)]
 pub struct DamageCircleHitbox {
@@ -18,15 +20,17 @@ pub struct DamageCircleHitbox {
 fn damage_circle_collision(
     mut player_query: Query<(&GlobalTransform, &mut Player)>,
     hitboxes_query: Query<(&GlobalTransform, &DamageCircleHitbox)>,
+    mut hit_ev: EventWriter<PlayerHitEvent>,
+    mut appstate: ResMut<NextState<AppState>>,
     time: Res<Time>,
 ) {
-    if let Ok((player_transform, mut player)) = player_query.get_single_mut() {
+    for (player_transform, mut player) in player_query.iter_mut() {
         if player.invincibility <= 0. {
             let player_pos = player_transform.translation().truncate();
-            for (transform, hitbox) in hitboxes_query.iter() {
+            'dealer_loop: for (transform, hitbox) in hitboxes_query.iter() {
                 if player_pos.distance_squared(transform.translation().truncate()) < hitbox.radius_squared {
-                    println!("player hit");
-                    player.invincibility = 5.;
+                    player_hit_consequences(&mut player, &mut appstate, &mut hit_ev);
+                    break 'dealer_loop; // prevents from trigerring twice
                 }
             }
         } else {
@@ -35,3 +39,16 @@ fn damage_circle_collision(
     }
 }
 
+struct PlayerHitEvent;
+
+fn player_hit_consequences(
+    player: &mut Player,
+    appstate: &mut ResMut<NextState<AppState>>,
+    hit_ev: &mut EventWriter<PlayerHitEvent>,
+) {
+    player.invincibility = 5.;
+    match player.health.checked_sub(1) {
+        Some(health) => { player.health = health; hit_ev.send(PlayerHitEvent) },
+        None => { appstate.set(AppState::Death); player.health = 0 }
+    }
+}

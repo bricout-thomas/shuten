@@ -9,6 +9,7 @@ pub struct LoadedAssets {
     pub minideathstar_spritesheet: Handle<TextureAtlas>,
     pub red_bullet: Handle<Image>,
     pub player_bullet: Handle<Image>,
+    pub health_indicator: Handle<Image>,
 }
 
 impl FromWorld for LoadedAssets {
@@ -32,6 +33,7 @@ impl FromWorld for LoadedAssets {
         minideathstar_spritesheet,
         red_bullet: asset_server.load("bullet.png"),
         player_bullet: asset_server.load("player_bullet.png"),
+        health_indicator: asset_server.load("health.png")
     }
     }
 }
