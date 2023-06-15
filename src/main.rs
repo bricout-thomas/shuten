@@ -13,6 +13,7 @@ mod bullets;
 mod collisions;
 mod assets;
 mod ui;
+mod background;
 
 fn main() {
     App::new()
@@ -42,6 +43,7 @@ fn main() {
         .add_plugin(emitters::EmittersPlugin)       // emits bullets, defines their spawning and
         .add_plugin(collisions::CollisionPlugin)    // collision between enemies, player and en
         .add_plugin(ui::UIPlugin)
+        .add_plugin(background::BackgroundPlugin)
 
         // tests
         .add_plugin(testlevel::TestLevelPlugin)

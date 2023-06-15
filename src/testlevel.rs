@@ -18,7 +18,7 @@ fn spawn_test_ministars(
 ) {
     let death_star = spawn_death_star(&mut commands, &loaded_assets, Vec2::new(0., SCREEN_HEIGHT/2.+20.));
     commands.entity(death_star)
-        .insert(RingEmitter { timer: Timer::from_seconds(0.1, TimerMode::Repeating), bullet_count: 8, } )
+        .insert( RingEmitter { timer: Timer::from_seconds(0.1, TimerMode::Repeating), bullet_count: 8, } )
         // .insert(RandomBSplineFlight::new(default()))
     ;
 }
