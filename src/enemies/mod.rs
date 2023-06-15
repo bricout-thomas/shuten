@@ -18,7 +18,7 @@ impl Plugin for EnemyBehaviorPlugin {
 }
 
 #[derive(Component, Reflect, Default)]
-struct PlayerKillable {
+pub struct PlayerKillable {
     health: u16,
     hitbox: f32,
 }

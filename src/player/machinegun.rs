@@ -3,8 +3,6 @@ struct NormalWeapon {
     timer: Timer,
 }
 
-#[derive(Component)]
-pub struct PlayerBullet;
 
 fn player_shoot(
     keys: Res<Input<KeyCode>>,
