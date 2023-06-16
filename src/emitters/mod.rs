@@ -59,12 +59,16 @@ fn emit_ring_arc(
     angle_deviate: f32, // angle distance between each bullets
     speed: f32,
     directed: bool,
-) {
+) -> Vec<Entity> {
     let left_most_angle = angle - angle_deviate * bullet_count as f32 / 2.;
+    let mut entities = Vec::with_capacity(bullet_count as usize);
     for i in 0..bullet_count {
         let bullet_angle = left_most_angle + i as f32 * angle_deviate;
-        spawn_fixed_linear_bullet(commands, &loaded_assets, position, bullet_angle, speed, directed);
+        entities.push(
+            spawn_fixed_linear_bullet(commands, &loaded_assets, position, bullet_angle, speed, directed)
+        );
     }
+    entities
 }
 
 fn ring_arc_emitter(
@@ -76,7 +80,13 @@ fn ring_arc_emitter(
     for (transform, mut emitter) in emitter_query.iter_mut() {
         emitter.timer.tick(time.delta());
         if emitter.timer.just_finished() {
-            emit_ring_arc(&mut commands, &loaded_assets, transform.translation().truncate(), std::f32::consts::TAU*3./4., emitter.bullet_count, std::f32::consts::TAU/30., 30., true)
+            emit_ring_arc(&mut commands, &loaded_assets, 
+                transform.translation().truncate(), 
+                std::f32::consts::TAU*3./4., 
+                emitter.bullet_count, 
+                std::f32::consts::TAU/30., 
+                30., 
+                true);
         }
     }
 }
